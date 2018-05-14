@@ -67,6 +67,15 @@ module.exports = {
             return;
           }
 
+          // When there's already an instance of parity running, then we have
+          // exitCode==null and signal==SIGSEGV.
+          // In this case we just silently ignore, and let the 1st instance of
+          // parity do all the node work.
+          if (exitCode === null && signal === 'SIGSEGV') {
+            console.log('Another instance of parity is running, closing local instance.');
+            return;
+          }
+
           // If the exit code is not 0, then we show some error message
           if (Object.keys(parityArgv).length) {
             // If parity has been launched with some args, then most likely the
