@@ -165,14 +165,16 @@ export function fetchLocalApps (api) {
     .then(dapps =>
       dapps.filter(({ manifest }) => manifest))
     .then(dapps =>
-      dapps.map(({ filename, manifest: { id, localUrl, ...rest } }) => (
+      dapps.map(({ filename, manifest: { id, localUrl, iconUrl, ...rest } }) => (
         {
           ...rest,
           type: 'local',
-          id: `LOCAL-${id}`, // Prevent appId spoofing
+          // Prevent using the appId of an existing non-local dapp with already approved permissions
+          id: `LOCAL-${id}`,
           folderName: 'XYZ',
           visible: true,
-          localUrl: localUrl || `file://${dappsPath}/${filename}/index.html`
+          localUrl: localUrl || `file://${dappsPath}/${filename}/index.html`,
+          image: `file://${dappsPath}/${filename}/${iconUrl}`
         }
     )))
     .catch((error) => {
